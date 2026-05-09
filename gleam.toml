@@ -1,12 +1,14 @@
 name = "gleam_query"
 version = "0.1.0"
+target = "javascript"
 
-# description = "A type-safe query/cache library for Gleam, inspired by TanStack Query"
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "andresgutgon", repo = "gleam_query" }
+description = "A type-safe query/cache library for Gleam, inspired by TanStack Query"
+licences = ["MIT"]
+repository = { type = "github", user = "andresgutgon", repo = "gleam_query" }
 
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+lustre = ">= 5.6.0 and < 6.0.0"
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
