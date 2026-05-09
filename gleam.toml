@@ -4,7 +4,9 @@ target = "javascript"
 
 description = "A type-safe query/cache library for Gleam, inspired by TanStack Query"
 licences = ["MIT"]
-repository = { type = "github", user = "andresgutgon", repo = "gleam_query" }
+
+[links]
+repository = "https://github.com/andresgutgon/gleam_query"
 
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
