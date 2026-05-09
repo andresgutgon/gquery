@@ -6,7 +6,7 @@ description = "A type-safe query/cache library for Gleam, inspired by TanStack Q
 licences = ["MIT"]
 
 [[links]]
-title = "Gleam Query"
+title = "Repository"
 href = "https://github.com/andresgutgon/gleam_query"
 
 [dependencies]
