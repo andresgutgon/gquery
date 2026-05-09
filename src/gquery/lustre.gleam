@@ -1,4 +1,4 @@
-import gleam_query.{type Entry}
+import gquery.{type Entry}
 import lustre/effect.{type Effect}
 
 @external(javascript, "./lustre_ffi.mjs", "now")
@@ -19,12 +19,12 @@ fn now() -> Int
 /// ## Example
 ///
 /// ```gleam
-/// import gleam_query/lustre as gq
+/// import gquery/lustre as gq
 ///
 /// UserNavigatedToContacts(key) -> {
 ///   let entry =
 ///     dict.get(model.cache.contacts, key)
-///     |> result.unwrap(gleam_query.NotAsked)
+///     |> result.unwrap(gquery.NotAsked)
 ///   let #(new_entry, eff) = gq.query(
 ///     entry:     entry,
 ///     stale_ms:  30_000,
@@ -41,10 +41,10 @@ pub fn query(
   fetch fetch: Effect(Result(data, err)),
   on_result on_result: fn(Result(data, err)) -> msg,
 ) -> #(Entry(data, err), Effect(msg)) {
-  case gleam_query.is_stale(entry, stale_ms, now()) {
+  case gquery.is_stale(entry, stale_ms, now()) {
     False -> #(entry, effect.none())
     True -> {
-      let loading = gleam_query.Loading(stale: gleam_query.get_data(entry))
+      let loading = gquery.Loading(stale: gquery.get_data(entry))
       #(loading, effect.map(fetch, on_result))
     }
   }
@@ -61,7 +61,7 @@ pub fn query(
 /// ## Example
 ///
 /// ```gleam
-/// import gleam_query/lustre as gq
+/// import gquery/lustre as gq
 ///
 /// CacheGotContacts(key, result) -> {
 ///   let entry = gq.record(result)
@@ -70,5 +70,5 @@ pub fn query(
 /// }
 /// ```
 pub fn record(result: Result(data, err)) -> Entry(data, err) {
-  gleam_query.record(result, now())
+  gquery.record(result, now())
 }
