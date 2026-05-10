@@ -9,6 +9,10 @@ licences = ["MIT"]
 title = "Repository"
 href = "https://github.com/andresgutgon/gleam_query"
 
+[[links]]
+title = "Changelog"
+href = "https://github.com/andresgutgon/gleam_query/blob/main/CHANGELOG.md"
+
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 lustre = ">= 5.6.0 and < 6.0.0"
