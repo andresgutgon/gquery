@@ -85,6 +85,25 @@ pub fn invalidate(entry: Entry(a, e)) -> Entry(a, e) {
   }
 }
 
+/// Returns the stale data to embed in `Loading` when an entry transitions.
+///
+/// If the entry already carries data (`Loaded` or `Loading(Some(_))`), that
+/// data takes priority. Otherwise the supplied `placeholder` is used — this
+/// is the building block for the *keepPreviousData* pattern, where you pass
+/// the previous cache key's data as a placeholder so the UI stays populated
+/// while a new key is loading.
+///
+/// ```gleam
+/// let stale = gquery.stale_for(entry, placeholder: old_page)
+/// gquery.Loading(stale: stale)
+/// ```
+pub fn stale_for(entry: Entry(data, err), placeholder: Option(data)) -> Option(data) {
+  case get_data(entry) {
+    option.Some(_) as own -> own
+    option.None -> placeholder
+  }
+}
+
 /// Creates an `Entry` from a fetch result and a current timestamp.
 ///
 /// - `Ok(data)` → `Loaded(data, at: now_ms)`

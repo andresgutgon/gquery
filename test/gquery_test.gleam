@@ -116,6 +116,50 @@ pub fn invalidate_failed_resets_to_not_asked_test() {
   |> should.equal(gquery.NotAsked)
 }
 
+// --- stale_for ---
+
+pub fn stale_for_not_asked_no_placeholder_test() {
+  gquery.NotAsked
+  |> gquery.stale_for(option.None)
+  |> should.equal(option.None)
+}
+
+pub fn stale_for_not_asked_with_placeholder_test() {
+  gquery.NotAsked
+  |> gquery.stale_for(option.Some("prev"))
+  |> should.equal(option.Some("prev"))
+}
+
+pub fn stale_for_failed_with_placeholder_test() {
+  gquery.Failed("err")
+  |> gquery.stale_for(option.Some("prev"))
+  |> should.equal(option.Some("prev"))
+}
+
+pub fn stale_for_loading_no_stale_with_placeholder_test() {
+  gquery.Loading(stale: option.None)
+  |> gquery.stale_for(option.Some("prev"))
+  |> should.equal(option.Some("prev"))
+}
+
+pub fn stale_for_loading_own_stale_wins_over_placeholder_test() {
+  gquery.Loading(stale: option.Some("own"))
+  |> gquery.stale_for(option.Some("prev"))
+  |> should.equal(option.Some("own"))
+}
+
+pub fn stale_for_loaded_own_data_wins_over_placeholder_test() {
+  gquery.Loaded(data: "own", at: 0)
+  |> gquery.stale_for(option.Some("prev"))
+  |> should.equal(option.Some("own"))
+}
+
+pub fn stale_for_loaded_no_placeholder_test() {
+  gquery.Loaded(data: "own", at: 0)
+  |> gquery.stale_for(option.None)
+  |> should.equal(option.Some("own"))
+}
+
 // --- record ---
 
 pub fn record_ok_creates_loaded_test() {

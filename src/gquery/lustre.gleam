@@ -1,3 +1,4 @@
+import gleam/option.{type Option}
 import gquery.{type Entry}
 import lustre/effect.{type Effect}
 
@@ -16,35 +17,46 @@ fn now() -> Int
 ///   `Loading(stale_data)` (preserving any previous data for display) and
 ///   returns the fetch effect mapped through `on_result`.
 ///
-/// ## Example
+/// ### `placeholder`
+///
+/// Supply `placeholder` to implement the *keepPreviousData* pattern: when
+/// switching to a new cache key, pass the old key's data as the placeholder so
+/// the UI stays populated while the new fetch loads.  If the entry already has
+/// its own data it always takes priority over `placeholder`.
 ///
 /// ```gleam
 /// import gquery/lustre as gq
 ///
-/// UserNavigatedToContacts(key) -> {
-///   let entry =
-///     dict.get(model.cache.contacts, key)
-///     |> result.unwrap(gquery.NotAsked)
+/// UserChangedFilter(stage) -> {
+///   let old_key = contacts.cache_key(model)
+///   let new_model = Model(..model, filter_stage: stage)
+///   let new_key = contacts.cache_key(new_model)
+///   let entry = dict.get(cache, new_key) |> result.unwrap(gquery.NotAsked)
+///   let placeholder =
+///     dict.get(cache, old_key)
+///     |> result.map(gquery.get_data)
+///     |> result.unwrap(option.None)
 ///   let #(new_entry, eff) = gq.query(
-///     entry:     entry,
-///     stale_ms:  30_000,
-///     fetch:     contact_service.list(params),
-///     on_result: fn(result) { CacheGotContacts(key, result) },
+///     entry:       entry,
+///     stale_ms:    30_000,
+///     placeholder: placeholder,
+///     fetch:       contact_service.list(params),
+///     on_result:   fn(result) { GotContacts(new_key, result) },
 ///   )
-///   let cache = Cache(..model.cache, contacts: dict.insert(model.cache.contacts, key, new_entry))
-///   #(Model(..model, cache: cache), eff)
+///   ...
 /// }
 /// ```
 pub fn query(
   entry entry: Entry(data, err),
   stale_ms stale_ms: Int,
+  placeholder placeholder: Option(data),
   fetch fetch: Effect(Result(data, err)),
   on_result on_result: fn(Result(data, err)) -> msg,
 ) -> #(Entry(data, err), Effect(msg)) {
   case gquery.is_stale(entry, stale_ms, now()) {
     False -> #(entry, effect.none())
     True -> {
-      let loading = gquery.Loading(stale: gquery.get_data(entry))
+      let loading = gquery.Loading(stale: gquery.stale_for(entry, placeholder))
       #(loading, effect.map(fetch, on_result))
     }
   }
