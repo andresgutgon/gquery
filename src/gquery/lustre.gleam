@@ -5,6 +5,10 @@ import lustre/effect.{type Effect}
 @external(javascript, "./lustre_ffi.mjs", "now")
 fn now() -> Int
 
+pub fn now_ms() -> Int {
+  now()
+}
+
 /// Fetches data if the entry is stale, otherwise returns as-is.
 ///
 /// This is the primary API for integrating `gleam_query` with Lustre. Call it
