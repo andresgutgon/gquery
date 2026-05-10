@@ -1,5 +1,5 @@
 name = "gquery"
-version = "0.1.0"
+version = "0.1.1"
 target = "javascript"
 
 description = "A type-safe query/cache library for Gleam, inspired by TanStack Query"
